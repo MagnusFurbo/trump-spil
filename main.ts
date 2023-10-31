@@ -7,6 +7,11 @@ controller.player1.onButtonEvent(ControllerButton.Up, ControllerButtonEvent.Pres
         FBI.vy = -100
     }
 })
+function hammer () {
+    Hammer = sprites.create(assets.image`hammer`, SpriteKind.Projectile)
+    Hammer.vy = 50
+    Hammer.setPosition(80, 5)
+}
 function sætVariabler () {
     doera = sprites.create(assets.image`Dør 1`, SpriteKind.knap)
     doerb = sprites.create(assets.image`dør3`, SpriteKind.knap)
@@ -85,6 +90,44 @@ function sætVariabler () {
         . . . . . . . . . . . . . . . . 
         3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
         `, SpriteKind.knap)
+    trump = sprites.create(assets.image`Trump`, SpriteKind.Enemy)
+    Hammer = sprites.create(assets.image`hammer`, SpriteKind.Projectile)
+    knap_trumpkamp_FBI = sprites.create(img`
+        . . . . 5 5 5 5 5 5 5 5 . . . . 
+        . . . . 5 5 5 5 5 5 5 5 . . . . 
+        . . . . 5 5 5 5 5 5 5 5 . . . . 
+        . . . . 5 5 5 5 5 5 5 5 . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Player)
+    knap_trumpkamp_Dommer = sprites.create(img`
+        . . . . 3 3 3 3 3 3 3 3 . . . . 
+        . . . . 3 3 3 3 3 3 3 3 . . . . 
+        . . . . 3 3 3 3 3 3 3 3 . . . . 
+        . . . . 3 3 3 3 3 3 3 3 . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Player)
     sprites.destroy(doera)
     sprites.destroy(doerb)
     sprites.destroy(dokument1)
@@ -94,6 +137,65 @@ function sætVariabler () {
     sprites.destroy(fange)
     sprites.destroy(dokument2)
     sprites.destroy(dokumentKnap2)
+    sprites.destroy(trump)
+    sprites.destroy(Hammer)
+    sprites.destroy(knap_trumpkamp_Dommer)
+    sprites.destroy(knap_trumpkamp_FBI)
+}
+function Bossfight () {
+    if (FBI.overlapsWith(knap_trumpkamp_FBI) && Dommer.overlapsWith(knap_trumpkamp_Dommer) && info.life() == 3) {
+        hammer()
+        Dommer.setPosition(151, 85)
+        FBI.setPosition(0, 85)
+    }
+    if (Hammer.overlapsWith(trump) && info.life() == 3) {
+        sprites.destroy(Hammer)
+        info.changeLifeBy(-1)
+        trump.sayText("You're declaring open war on american democrazy", 2000, false)
+        pause(1000)
+        trump.vy += -50
+        pause(600)
+        trump.vy += 50
+        knap_trumpkamp_FBI.setPosition(120, 5)
+        knap_trumpkamp_Dommer.setPosition(40, 5)
+    }
+    if (FBI.overlapsWith(knap_trumpkamp_FBI) && Dommer.overlapsWith(knap_trumpkamp_Dommer) && info.life() == 2) {
+        hammer()
+        Dommer.setPosition(151, 85)
+        FBI.setPosition(0, 85)
+    }
+    if (Hammer.overlapsWith(trump) && info.life() == 2) {
+        sprites.destroy(Hammer)
+        info.changeLifeBy(-1)
+        trump.sayText("I know a lot of tough people that are stupid", 2000, false)
+        pause(1000)
+        trump.vy += -50
+        pause(600)
+        trump.vy += 50
+        knap_trumpkamp_FBI.setPosition(120, 5)
+        knap_trumpkamp_Dommer.setPosition(40, 5)
+    }
+    if (FBI.overlapsWith(knap_trumpkamp_FBI) && Dommer.overlapsWith(knap_trumpkamp_Dommer) && info.life() == 1) {
+        trump.vy = 50
+    }
+    if (trump.isHittingTile(CollisionDirection.Bottom) && info.life() == 1) {
+        sprites.destroy(FBI)
+        sprites.destroy(Dommer)
+        sprites.destroy(knap_trumpkamp_Dommer)
+        sprites.destroy(knap_trumpkamp_FBI)
+        tiles.setCurrentTilemap(tilemap`level14`)
+        trump.sayText("There’s nothing you can say where you don’t get a Pinocchio", 2000, false)
+        pause(5000)
+        info.changeLifeBy(-1)
+        game.setGameOverMessage(false, "Trump fænglset")
+        game.setGameOverEffect(false, effects.confetti)
+    }
+    if (FBI.overlapsWith(trump)) {
+        FBI.setPosition(0, 85)
+    }
+    if (Dommer.overlapsWith(trump)) {
+        Dommer.setPosition(151, 85)
+    }
 }
 controller.player2.onButtonEvent(ControllerButton.Up, ControllerButtonEvent.Pressed, function () {
     if (Dommer.isHittingTile(CollisionDirection.Bottom)) {
@@ -206,6 +308,51 @@ function Map_2 () {
 function map_3 () {
     if (FBI.overlapsWith(knapMap2_FBI) && Dommer.overlapsWith(knapMap2_Dommer)) {
         tiles.setCurrentTilemap(tilemap`level12`)
+        trump = sprites.create(assets.image`Trump`, SpriteKind.Enemy)
+        knap_trumpkamp_Dommer = sprites.create(img`
+            . . . . 3 3 3 3 3 3 3 3 . . . . 
+            . . . . 3 3 3 3 3 3 3 3 . . . . 
+            . . . . 3 3 3 3 3 3 3 3 . . . . 
+            . . . . 3 3 3 3 3 3 3 3 . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Player)
+        knap_trumpkamp_FBI = sprites.create(img`
+            . . . . 5 5 5 5 5 5 5 5 . . . . 
+            . . . . 5 5 5 5 5 5 5 5 . . . . 
+            . . . . 5 5 5 5 5 5 5 5 . . . . 
+            . . . . 5 5 5 5 5 5 5 5 . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Player)
+        sprites.destroy(knapMap2_Dommer)
+        sprites.destroy(knapMap2_FBI)
+        trump.setPosition(80, 95)
+        Dommer.setPosition(151, 85)
+        FBI.setPosition(0, 85)
+        knap_trumpkamp_Dommer.setPosition(120, 5)
+        knap_trumpkamp_FBI.setPosition(40, 5)
+        info.setLife(3)
     }
 }
 function backToMap2 () {
@@ -392,6 +539,9 @@ function backToMap2 () {
         controller.moveSprite(FBI, 100, 0)
     }
 }
+let knap_trumpkamp_Dommer: Sprite = null
+let knap_trumpkamp_FBI: Sprite = null
+let trump: Sprite = null
 let dokumentKnap2: Sprite = null
 let dokument2: Sprite = null
 let fange: Sprite = null
@@ -401,6 +551,7 @@ let dokumentKnap1: Sprite = null
 let dokument1: Sprite = null
 let doerb: Sprite = null
 let doera: Sprite = null
+let Hammer: Sprite = null
 let knap_dommer: Sprite = null
 let knap_fbi: Sprite = null
 let Dommer: Sprite = null
@@ -478,6 +629,7 @@ knap_dommer = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     6 6 6 6 6 6 . . . . . . . . . . 
     `, SpriteKind.knap)
+sætVariabler()
 tiles.setCurrentTilemap(tilemap`level1`)
 controller.moveSprite(FBI, 100, 0)
 controller.player2.moveSprite(Dommer, 100, 0)
@@ -489,9 +641,9 @@ FBI.ay = 200
 Dommer.ay = 200
 knap_fbi.setPosition(152, 10)
 knap_dommer.setPosition(140, 10)
-sætVariabler()
 forever(function () {
     Map_2()
     backToMap2()
     map_3()
+    Bossfight()
 })
